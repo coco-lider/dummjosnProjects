@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import LoginPage from "./Login";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <h1>hellow world</h1>
+    <div className="App">
+      <LoginPage />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
