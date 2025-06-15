@@ -3,7 +3,6 @@ import React from "react";
 const Footer = () => {
   return (
     <div>
-      {/* Newsletter */}
       <div className="bg-black text-white">
         <div className="container mx-auto px-4 py-12">
           <div className="text-center max-w-2xl mx-auto">
@@ -25,8 +24,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
       <footer className="bg-gray-100">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8">

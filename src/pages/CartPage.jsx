@@ -1,61 +1,26 @@
-"use client"
+"use client";
 
-import { Search, User, ShoppingBag, Menu, X, Minus, Plus, Trash2 } from "lucide-react"
-import { useState } from "react"
-import Footer from "../components/Footer"
-import Header from "../components/Header"
-
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+import { useCart } from "../context/CartContext";
 
 const CartPage = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [promoCode, setPromoCode] = useState("")
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Gradient Graphic T-shirt",
-      size: "Large",
-      color: "White",
-      price: 145,
-      quantity: 1,
-      image: "/placeholder.svg?height=100&width=100",
-    },
-    {
-      id: 2,
-      name: "Checkered Shirt",
-      size: "Medium",
-      color: "Red",
-      price: 180,
-      quantity: 1,
-      image: "/placeholder.svg?height=100&width=100",
-    },
-    {
-      id: 3,
-      name: "Skinny Fit Jeans",
-      size: "Large",
-      color: "Blue",
-      price: 240,
-      quantity: 1,
-      image: "/placeholder.svg?height=100&width=100",
-    },
-  ])
+  const [promoCode, setPromoCode] = useState("");
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
 
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return
-    setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)))
-  }
-
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id))
-  }
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const discount = subtotal * 0.2 // 20% discount
-  const deliveryFee = 15
-  const total = subtotal - discount + deliveryFee
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const discount = subtotal * 0.2;
+  const deliveryFee = 15;
+  const total = subtotal - discount + deliveryFee;
 
   return (
     <div className="min-h-screen bg-white mt-20">
-    <Header/>
+      <Header />
 
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4">
@@ -70,7 +35,10 @@ const CartPage = () => {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-6">
             {cartItems.map((item) => (
-              <div key={item.id} className="border border-gray-200 rounded-lg p-4">
+              <div
+                key={item.id}
+                className="border border-gray-200 rounded-lg p-4"
+              >
                 <div className="flex items-start space-x-4">
                   <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                     <img
@@ -83,27 +51,36 @@ const CartPage = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="font-semibold text-lg mb-2">{item.name}</h3>
+                        <h3 className="font-semibold text-lg mb-2">
+                          {item.name}
+                        </h3>
                         <div className="space-y-1 text-sm text-gray-600">
                           <div>
-                            Size: <span className="text-black">{item.size}</span>
+                            Size:{" "}
+                            <span className="text-black">{item.size}</span>
                           </div>
                           <div>
-                            Color: <span className="text-black">{item.color}</span>
+                            Color:{" "}
+                            <span className="text-black">{item.color}</span>
                           </div>
                         </div>
                       </div>
-                      <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700 p-1">
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-red-500 hover:text-red-700 p-1"
+                      >
                         <Trash2 className="h-5 w-5" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between mt-4">
+                    <div className="flex flex-wrap items-center justify-between mt-4">
                       <div className="text-xl font-bold">${item.price}</div>
                       <div className="flex items-center space-x-3">
                         <div className="flex items-center border border-gray-300 rounded-lg">
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity - 1)
+                            }
                             className="p-2 hover:bg-gray-50"
                           >
                             <Minus className="h-4 w-4" />
@@ -112,7 +89,9 @@ const CartPage = () => {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
                             className="p-2 hover:bg-gray-50"
                           >
                             <Plus className="h-4 w-4" />
@@ -134,11 +113,13 @@ const CartPage = () => {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-semibold">${subtotal}</span>
+                  <span className="font-semibold">${Math.ceil(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Discount (-20%)</span>
-                  <span className="font-semibold text-red-500">-${discount.toFixed(0)}</span>
+                  <span className="font-semibold text-red-500">
+                    -${discount.toFixed(0)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Delivery Fee</span>
@@ -151,8 +132,8 @@ const CartPage = () => {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex space-x-2">
+              <div className="space-y-4 px-5">
+                <div class="flex flex-col sm:flex-row sm:justify-center sm:gap-5 space-y-2 sm:space-y-0">
                   <input
                     type="text"
                     placeholder="Add promo code"
@@ -160,7 +141,7 @@ const CartPage = () => {
                     onChange={(e) => setPromoCode(e.target.value)}
                     className="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-sm"
                   />
-                  <button className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800">
+                  <button className="bg-black text-white px-5 py-3 rounded-lg font-medium hover:bg-gray-800">
                     Apply
                   </button>
                 </div>
@@ -174,9 +155,9 @@ const CartPage = () => {
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default CartPage
+export default CartPage;
