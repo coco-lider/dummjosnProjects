@@ -1,12 +1,18 @@
-import React from "react";
-import LoginPage from "./Login";
+import Home from './pages/Home'
+import React from 'react'
+import ProductDetail from './components/ProductDetail'
+import ShopPage from './pages/ShopPage'
+import CartPage from './pages/CartPage'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <LoginPage />
+    <div>
+      {/* <Home/> */}
+      {/* <ProductDetail/> */}
+      <ShopPage/>
+      {/* <CartPage/> */}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
