@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { api, getProductsCategory } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Slider } from "@mui/material";
 
 const getProducts = async () => {
@@ -154,7 +154,7 @@ const ShopPage = () => {
       <Header />
 
       <div className="container mx-auto px-4 py-4">
-        <div className="text-sm text-gray-500">Home / Shop</div>
+        <div className="text-sm text-gray-500"><NavLink to={'/'}>Home</NavLink> / Shop</div>
       </div>
 
       <div className="container mx-auto px-4 pb-12">

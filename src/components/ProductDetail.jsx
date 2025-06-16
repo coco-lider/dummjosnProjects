@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getSingleProduct } from "../services/api";
 import { Star, Heart } from "lucide-react";
@@ -12,6 +12,7 @@ const ProductDetail = () => {
   const [activeImage, setActiveImage] = useState(null);
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["singleProduct", id],
@@ -63,9 +64,95 @@ const ProductDetail = () => {
       <div className="text-center py-10 text-red-500">Xatolik yuz berdi!</div>
     );
 
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex + 3 >= testimonials.length ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? Math.max(0, testimonials.length - 3) : prevIndex - 1
+    );
+  };
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <span
+        key={index}
+        className={`text-lg ${
+          index < rating ? "text-yellow-400" : "text-gray-300"
+        }`}
+      >
+        ★
+      </span>
+    ));
+  };
+
+  const testimonials = data?.reviews || [];
+  console.log("..", testimonials);
+
+  const getVisibleTestimonials = () => {
+    const visible = testimonials.slice(currentIndex, currentIndex + 3);
+
+    if (visible.length < 3 && testimonials.length >= 3) {
+      const remaining = 3 - visible.length;
+      visible.push(...testimonials.slice(0, remaining));
+    }
+
+    return visible;
+  };
+
+  const ChevronLeft = () => (
+    <svg
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M15 19l-7-7 7-7"
+      />
+    </svg>
+  );
+
+  const ChevronRight = () => (
+    <svg
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 5l7 7-7 7"
+      />
+    </svg>
+  );
+
+  const CheckIcon = () => (
+    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+      <path
+        fillRule="evenodd"
+        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+
   return (
     <div className="min-h-screen bg-white mt-16">
       <Header />
+      <div className="container mx-auto px-4 py-4">
+        <div className="text-sm text-gray-500">
+          <NavLink to={"/"}>Home</NavLink> / Product
+        </div>
+      </div>
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="flex flex-col lg:flex-row gap-4">
@@ -148,7 +235,59 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-32">
+        {getVisibleTestimonials().map((testimonial, index) => (
+          <div
+            key={`${testimonial.id}-${index}`}
+            className="border border-gray-200 rounded-lg shadow-sm p-6 bg-white"
+          >
+            <div className="flex gap-1 mb-4">
+              {renderStars(testimonial.rating)}
+            </div>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="font-semibold text-black text-lg">
+                {testimonial.reviewerName}
+              </span>
+              <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                <CheckIcon />
+              </div>
+            </div>
+            <blockquote className="text-gray-600 leading-relaxed">
+              "{testimonial.comment}"
+            </blockquote>
+          </div>
+        ))}
+      </div>
+      <div className="flex md:hidden justify-center gap-2 mt-8">
+        <button
+          onClick={prevSlide}
+          className="w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-50 flex items-center justify-center transition-colors"
+        >
+          <ChevronLeft />
+        </button>
+        <button
+          onClick={nextSlide}
+          className="w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-50 flex items-center justify-center transition-colors"
+        >
+          <ChevronRight />
+        </button>
+      </div>
+      <div className="flex justify-center gap-2 mb-10">
+        {Array.from(
+          { length: Math.ceil(testimonials.length / 3) },
+          (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index * 3)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                Math.floor(currentIndex / 3) === index
+                  ? "bg-black"
+                  : "bg-gray-300"
+              }`}
+            />
+          )
+        )}
+      </div>
       <Footer />
     </div>
   );

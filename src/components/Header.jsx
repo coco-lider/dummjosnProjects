@@ -8,7 +8,6 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { cartItems } = useCart();
   const totalCount = cartItems.length;
-  console.log(cartItems.le);
   
 
   return (

@@ -5,6 +5,7 @@ import { useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useCart } from "../context/CartContext";
+import { NavLink } from "react-router-dom";
 
 const CartPage = () => {
   const [promoCode, setPromoCode] = useState("");
@@ -24,7 +25,7 @@ const CartPage = () => {
 
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4">
-        <div className="text-sm text-gray-500">Home / Cart</div>
+        <div className="text-sm text-gray-500"><NavLink to={'/'}>Home</NavLink> / Cart</div>
       </div>
 
       {/* Cart Content */}
